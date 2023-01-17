@@ -46,4 +46,4 @@ bootstrap()
 - [ ] **`yarn add prisma -D`**
 - [ ] **`yarn add @prisma/client`**
 - [ ] **`yarn prisma init --datasource-provider postgresql`** - cria um banco de dados, no caso optei pelo uso de `postgresql` mas o prisma suporta muitos outros não relacionais e relacionais. Para postgres é necessário fornecer uma string de conexão como está no arquivo `.env.example`, serviços como [Railway](https://railway.app/), [Render](https://render.com/) e [Supabase](https://supabase.com/) possuem hospedagem gratuita de BD postgresql.
-`yarn prisma db push` - uma alternativa ao `prisma migrate dev`, esse comando manda as alterações diretamente sem criar uma `migration`
+- [ ] **`yarn prisma db push`** - uma alternativa ao `prisma migrate dev`, esse comando manda as alterações diretamente sem criar uma `migration`
