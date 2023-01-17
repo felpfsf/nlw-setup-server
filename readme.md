@@ -43,7 +43,38 @@ async function bootstrap(){
 bootstrap()
 ```
 
-- [ ] **`yarn add prisma -D`**
-- [ ] **`yarn add @prisma/client`**
+- [ ] **`yarn add prisma -D`** - Instala o ORM Prisma
 - [ ] **`yarn prisma init --datasource-provider postgresql`** - cria um banco de dados, no caso optei pelo uso de `postgresql` mas o prisma suporta muitos outros não relacionais e relacionais. Para postgres é necessário fornecer uma string de conexão como está no arquivo `.env.example`, serviços como [Railway](https://railway.app/), [Render](https://render.com/) e [Supabase](https://supabase.com/) possuem hospedagem gratuita de BD postgresql.
 - [ ] **`yarn prisma db push`** - uma alternativa ao `prisma migrate dev`, esse comando manda as alterações diretamente sem criar uma `migration`
+- [ ] **`yarn add @prisma/client`** - PrismaClient é o querybuilder necessário para fazer a conexão e executar ações de leitura e escrita no bd.
+
+Para utilizar o Prisma Client é necessário importá-lo e criar uma nova instância dele, aqui ele se encontra em um arquivo separado para manter o código mais organizado:
+*lib/prisma.ts*
+
+```js
+import { PrismaClient } from '@prisma/client'
+
+// Exporta a função para ser utilizada em qualquer arquivo, assim evita a necessidade de repetir esse código todas as vezes
+export const prisma = new PrismaClient({
+  log: ['query']
+  // Aqui exibe o log de todas as query(create, select, update, delete...) executadas
+})
+```
+Utilizando o prisma/client:
+*routes.ts*
+
+```js
+import { FastifyInstance } from 'fastify'
+import { prisma } from '../lib/prisma'
+
+export async function habitsRoutes(server: FastifyInstance) {
+  // Get All Habits
+  server.get('/', async(request, reply)=>{
+    // O prisma usado aqui é o mesmo criado em lib,
+    // Dispensando a necessidade de executar todos aqueles comandos
+    // tornando o código mais legível e de fácil manutenção
+    const habits = await prisma.habit.findMany()
+    return habits
+  })
+}
+```
