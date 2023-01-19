@@ -1,6 +1,7 @@
 import fastify from 'fastify'
 import cors from '@fastify/cors'
 import { habitsRoutes } from './routes/habits.routes'
+import { serializerCompiler, validatorCompiler } from 'fastify-type-provider-zod'
 
 const port = (process.env.PORT as unknown as number) || 3333
 
@@ -10,6 +11,19 @@ async function bootstrap() {
   })
 
   server.register(cors, { origin: true })
+  
+  server.setValidatorCompiler(validatorCompiler)
+  server.setSerializerCompiler(serializerCompiler)
+
+  server.setErrorHandler((error, request, reply) => {
+    const toSend = {
+      message: 'Validation error',
+      errors: JSON.parse(error.message),
+      statusCode: error.statusCode || 500
+    }
+
+    reply.code(toSend.statusCode).send(toSend)
+  })
 
   await server.register(habitsRoutes, { prefix: '/api/habits' })
 
