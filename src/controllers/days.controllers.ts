@@ -1,7 +1,10 @@
 import dayjs from 'dayjs'
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { prisma } from '../lib/prisma'
-import { getPossibleHabits } from '../middlewares/day.services'
+import {
+  getCompletedHabits,
+  getPossibleHabits
+} from '../middlewares/day.services'
 import { DayParams } from '../models/day.models'
 
 export async function getDaysController(
@@ -13,10 +16,14 @@ export async function getDaysController(
 
   const parsedDate = dayjs(date).startOf('day')
   const weekDay = parsedDate.get('day')
-  console.log(weekDay)
+  console.log(parsedDate, typeof parsedDate)
 
-  const resultado = await getPossibleHabits(date)
+  const possibleHabits = await getPossibleHabits(date, parsedDate)
+  const completedHabits = await getCompletedHabits(parsedDate)
 
-
-  return { resultado }
+  return reply.status(200).send({
+    message: 'Possíveis hábitos completados:',
+    possibleHabits,
+    completedHabits
+  })
 }

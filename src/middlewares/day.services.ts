@@ -1,9 +1,7 @@
-import dayjs from 'dayjs'
+import { Dayjs } from 'dayjs'
 import { prisma } from '../lib/prisma'
-import { DayParams } from '../models/day.models'
 
-export async function getPossibleHabits(date: Date) {
-  const parsedDate = dayjs(date).startOf('day')
+export async function getPossibleHabits(date: Date, parsedDate: Dayjs) {
   const weekDay = parsedDate.get('day')
 
   const possibleHabits = await prisma.habit.findMany({
@@ -19,6 +17,10 @@ export async function getPossibleHabits(date: Date) {
     }
   })
 
+  return possibleHabits
+}
+
+export async function getCompletedHabits(parsedDate: Dayjs) {
   const day = await prisma.day.findFirst({
     where: {
       date: parsedDate.toDate()
@@ -32,5 +34,5 @@ export async function getPossibleHabits(date: Date) {
     return dayHabit.habit_id
   })
 
-  return { possibleHabits, completedHabits }
+  return completedHabits
 }
