@@ -1,7 +1,8 @@
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { ZodError } from 'zod'
+import { dayHabitToggle } from '../middlewares/day.services'
 import { createHabit, findHabits } from '../middlewares/habits.services'
-import { HabitBody } from '../models/habits.models'
+import { HabitBody, ToggleHabitParams } from '../models/habits.models'
 
 export async function getHabits(request: FastifyRequest, reply: FastifyReply) {
   const habits = await findHabits()
@@ -36,4 +37,15 @@ export async function postHabitsController(
       })
     }
   }
+}
+
+export async function dayHabitToggleController(
+  request: FastifyRequest<{ Params: ToggleHabitParams }>,
+  reply: FastifyReply
+) {
+  const { id } = request.params
+
+  const dayHabit = await dayHabitToggle(id)
+
+  return reply.status(200).send({ dayHabit })
 }
