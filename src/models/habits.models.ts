@@ -6,3 +6,7 @@ export const habitBody = z.object({
 })
 
 export type HabitBody = z.infer<typeof habitBody>
+
+export const toggleHabitParams = z.object({
+  id: z.string().uuid()
+})
