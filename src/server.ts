@@ -1,7 +1,11 @@
 import fastify from 'fastify'
 import cors from '@fastify/cors'
 import { habitsRoutes } from './routes/habits.routes'
-import { serializerCompiler, validatorCompiler } from 'fastify-type-provider-zod'
+import {
+  serializerCompiler,
+  validatorCompiler
+} from 'fastify-type-provider-zod'
+import { dayRoutes } from './routes/day.routes'
 
 const port = (process.env.PORT as unknown as number) || 3333
 
@@ -11,7 +15,7 @@ async function bootstrap() {
   })
 
   server.register(cors, { origin: true })
-  
+
   server.setValidatorCompiler(validatorCompiler)
   server.setSerializerCompiler(serializerCompiler)
 
@@ -26,6 +30,7 @@ async function bootstrap() {
   })
 
   await server.register(habitsRoutes, { prefix: '/api/habits' })
+  await server.register(dayRoutes, { prefix: '/api/day' })
 
   await server
     .listen({ port: port })
